@@ -1,0 +1,3 @@
+packages:
+  - "spikes/*"
+  - "packages/*"

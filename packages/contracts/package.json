@@ -1,0 +1,13 @@
+{
+  "name": "@metropolis/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test",
+    "format:check": "forge fmt --check"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "5.4.0"
+  }
+}

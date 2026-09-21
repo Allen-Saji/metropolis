@@ -1,0 +1,8 @@
+node_modules/
+.env
+dist/
+packages/contracts/out/
+packages/contracts/cache/
+packages/contracts/broadcast/
+spikes/perpl-custody/artifacts/*.json
+!spikes/perpl-custody/artifacts/.gitkeep

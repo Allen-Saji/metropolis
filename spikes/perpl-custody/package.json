@@ -1,0 +1,17 @@
+{
+  "name": "@metropolis/perpl-custody",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {},
+  "dependencies": {
+    "solc": "^0.8.37",
+    "viem": "^2.56.8",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
