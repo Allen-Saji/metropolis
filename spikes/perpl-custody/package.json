@@ -3,7 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "probe": "tsx src/probe-public.ts",
+    "prepare-funds": "tsx src/prepare-funds.ts",
+    "verify-live": "tsx src/verify-live.ts",
+    "compile": "tsx src/compile.ts",
+    "check": "tsc --noEmit && tsx src/compile.ts && tsx src/probe-public.ts",
+    "live": "tsx src/live-spike.ts"
+  },
   "dependencies": {
     "solc": "^0.8.37",
     "viem": "^2.56.8",
