@@ -8,6 +8,8 @@
     "spike:verify-live": "pnpm --filter @metropolis/perpl-custody verify-live",
     "spike:compile": "pnpm --filter @metropolis/perpl-custody compile",
     "spike:check": "pnpm --filter @metropolis/perpl-custody check",
-    "spike:live": "pnpm --filter @metropolis/perpl-custody live"
+    "spike:live": "pnpm --filter @metropolis/perpl-custody live",
+    "spike:accounting": "pnpm --filter @metropolis/perpl-custody probe:accounting",
+    "spike:test": "pnpm --filter @metropolis/perpl-custody test"
   }
 }

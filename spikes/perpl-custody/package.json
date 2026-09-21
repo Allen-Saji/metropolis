@@ -9,7 +9,9 @@
     "verify-live": "tsx src/verify-live.ts",
     "compile": "tsx src/compile.ts",
     "check": "tsc --noEmit && tsx src/compile.ts && tsx src/probe-public.ts",
-    "live": "tsx src/live-spike.ts"
+    "live": "tsx src/live-spike.ts",
+    "probe:accounting": "tsx src/probe-accounting.ts",
+    "test": "tsx --test src/accounting.test.ts"
   },
   "dependencies": {
     "solc": "^0.8.37",
