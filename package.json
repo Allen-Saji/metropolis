@@ -10,6 +10,8 @@
     "spike:check": "pnpm --filter @metropolis/perpl-custody check",
     "spike:live": "pnpm --filter @metropolis/perpl-custody live",
     "spike:accounting": "pnpm --filter @metropolis/perpl-custody probe:accounting",
-    "spike:test": "pnpm --filter @metropolis/perpl-custody test"
+    "spike:test": "pnpm --filter @metropolis/perpl-custody test",
+    "contracts:build": "pnpm --filter @metropolis/contracts build",
+    "contracts:test": "pnpm --filter @metropolis/contracts test"
   }
 }
