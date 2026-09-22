@@ -161,7 +161,7 @@ export class Worker {
         );
       const from = previous + 1n;
       if (from > finalized) return;
-      const to = from + 199n < finalized ? from + 199n : finalized;
+      const to = from + 99n < finalized ? from + 99n : finalized;
       const hash = await this.service.chain.blockHash(to);
       const events = await this.service.chain.events(from, to);
       for (const event of events)

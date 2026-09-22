@@ -3,7 +3,6 @@ import {
   BaseError,
   ExecutionRevertedError,
   createPublicClient,
-  http,
   defineChain,
   encodeFunctionData,
   decodeFunctionData,
@@ -20,6 +19,7 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { ensure, Fault, json } from "./common.js";
 import { exchangeEventAbi } from "./perpl-events.js";
+import { limitedHttp } from "./rpc.js";
 import { SUITE_HASH } from "./qualification.js";
 import type { Gateway, Job, State, Prepared, Event } from "./types.js";
 
@@ -34,6 +34,7 @@ export type ChainConfig = {
   maxGas: bigint;
   artifactDirectory: URL;
   nowSeconds?: () => number;
+  rpcRequestIntervalMs?: number;
 };
 async function artifact(directory: URL, name: string): Promise<Abi> {
   return JSON.parse(
@@ -70,7 +71,7 @@ export async function gateway(config: ChainConfig): Promise<Gateway> {
   ensure(config.chainId === 10143, "TESTNET_ONLY");
   const client = createPublicClient({
     chain,
-    transport: http(config.rpcUrl, { timeout: 10000, retryCount: 1 }),
+    transport: limitedHttp(config.rpcUrl, config.rpcRequestIntervalMs),
     batch: { multicall: false },
   });
   const evaluator = privateKeyToAccount(config.evaluatorKey),

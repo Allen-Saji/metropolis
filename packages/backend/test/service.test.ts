@@ -348,3 +348,21 @@ test("definitive reverted receipt remains distinct from qualification success", 
   );
   assert.equal(chain.broadcasts.length, 0);
 });
+
+test("finalized backfill respects the public RPC 100-block range limit", async (t) => {
+  const db = await database();
+  t.after(() => db.close());
+  const chain = new FakeChain();
+  chain.events = async (from, to) => {
+    assert.ok(to - from + 1n <= 100n);
+    return [];
+  };
+  const worker = new Worker(new Service(db, chain, "http://localhost:3000"));
+  await worker.index(250n);
+  await worker.index(250n);
+  await worker.index(250n);
+  const [cursor] = await db.query<{ block_number: string }>(
+    "SELECT block_number FROM cursor",
+  );
+  assert.equal(String(cursor!.block_number), "250");
+});
