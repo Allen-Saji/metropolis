@@ -378,4 +378,17 @@ contract MetropolisVaultTest {
         vm.prank(BOB);
         vault.finishSettlement();
     }
+
+    function testDelayedQualificationCannotTransferToNewIdentityOwner() public {
+        identity.setOwner(7, BOB);
+        vm.expectRevert(QualificationRegistry.InvalidQualification.selector);
+        registry.recordForOwner(
+            7, ALICE, OPERATOR, SUITE, keccak256("queued-evidence"), uint64(block.timestamp + 1 days), true
+        );
+        require(!registry.isQualified(7, OPERATOR, SUITE));
+        registry.recordForOwner(
+            7, BOB, OPERATOR, SUITE, keccak256("new-consent"), uint64(block.timestamp + 1 days), true
+        );
+        require(registry.isQualified(7, OPERATOR, SUITE));
+    }
 }

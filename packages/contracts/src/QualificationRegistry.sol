@@ -37,7 +37,7 @@ contract QualificationRegistry is Ownable2Step {
     }
 
     function record(uint256 agentId, address operator, bytes32 suite, bytes32 evidence, uint64 expiresAt, bool passed)
-        external
+        public
         onlyOwner
     {
         if (
@@ -55,6 +55,20 @@ contract QualificationRegistry is Ownable2Step {
             passed: passed
         });
         emit QualificationRecorded(agentId, operator, suite, evidence, expiresAt, passed);
+    }
+
+    /// @notice Bind delayed evaluator publication to the owner that authorized the run.
+    function recordForOwner(
+        uint256 agentId,
+        address expectedOwner,
+        address operator,
+        bytes32 suite,
+        bytes32 evidence,
+        uint64 expiresAt,
+        bool passed
+    ) external onlyOwner {
+        if (identity.ownerOf(agentId) != expectedOwner) revert InvalidQualification();
+        record(agentId, operator, suite, evidence, expiresAt, passed);
     }
 
     function isQualified(uint256 agentId, address operator, bytes32 suite) external view returns (bool) {
