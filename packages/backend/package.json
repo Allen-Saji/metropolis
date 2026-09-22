@@ -1,0 +1,29 @@
+{
+  "name": "@metropolis/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc && cp src/schema.sql dist/src/schema.sql",
+    "test": "tsx --test test/*.test.ts",
+    "migrate": "tsx src/migrate.ts",
+    "format:check": "prettier --check \"{src,test,scripts}/**/*.ts\""
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "@fastify/rate-limit": "^11.2.0",
+    "fastify": "^5.12.5",
+    "pg": "^8.23.0",
+    "viem": "^2.56.8",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@types/node": "^26.6.2",
+    "@types/pg": "^8.23.1",
+    "prettier": "^3.9.8",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
