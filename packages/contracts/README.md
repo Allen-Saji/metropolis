@@ -37,6 +37,9 @@ ownership is needed. The manager and evaluator are separate configurable roles;
 both use two-step ownership transfer. Manager privileges do not include taking
 user collateral or bypassing trading limits. The evaluator remains trusted to
 issue truthful qualification results and bind the authorized execution key.
+The backend publishes through `recordForOwner`, which rejects an identity-owner
+change between authorization and transaction execution. The `record` method is
+retained for explicit evaluator-controlled manual attestations.
 
 ## Lifecycle
 
@@ -123,8 +126,9 @@ spike position and execute the new vault's deposit/trade/settlement/redemption
 cycle against actual Perpl and AUSD bytecode.
 
 Public-testnet deployment and operation remain unverified for these contracts.
-The API, qualification runner, keeper, frontend, deployment tooling, and real
-ERC-8004 enrollment are still to be built. Venue contracts, token administrators,
+The API, qualification runner and keeper are implemented in `packages/backend`
+and tested against a local EVM. Frontend, deployment tooling and real ERC-8004
+enrollment remain to be built. Venue contracts, token administrators,
 oracle data and liquidity remain external trust/availability dependencies.
 Settlement has no guaranteed deadline: stale marks, venue failure or insufficient
 liquidity can prevent closure/recovery. The venue may upgrade independently of our

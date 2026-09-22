@@ -13,8 +13,9 @@ The new contracts are locally tested, including execution against Perpl bytecode
 on a historical Monad Testnet fork. They have not been deployed to public testnet.
 
 The earlier custody spike separately completed real public-testnet trades. It
-remains an integration reference, not the application vault. Backend API,
-qualification runner, keeper, frontend, and deployment tooling are still pending.
+remains an integration reference, not the application vault. The backend API,
+qualification runner, signed-transaction relay and keeper are implemented with PostgreSQL persistence and a local EVM integration test.
+Frontend, public-testnet deployment and hosting remain pending.
 This project is not ready for mainnet or real user capital.
 
 ## Repository
@@ -22,6 +23,8 @@ This project is not ready for mainnet or real user capital.
 - `packages/contracts/`: application Solidity contracts, unit/fuzz tests, and
   optional Perpl fork tests. See [contract documentation](packages/contracts/README.md)
   for permissions, risk policy, accounting, and frontend integration.
+- `packages/backend/`: Fastify API, qualification runner, transaction journal,
+  finalized indexer and keeper. See [backend documentation](packages/backend/README.md).
 - `spikes/perpl-custody/`: original custody proof and read-only accounting probes.
 
 ## Development
@@ -35,6 +38,9 @@ export PATH="$HOME/.foundry/bin:$PATH"
 pnpm contracts:build
 pnpm contracts:test
 pnpm spike:test
+pnpm backend:check
+pnpm backend:test
+pnpm backend:build
 ```
 
 To run the optional historical fork integration tests:
