@@ -12,6 +12,10 @@
     "spike:accounting": "pnpm --filter @metropolis/perpl-custody probe:accounting",
     "spike:test": "pnpm --filter @metropolis/perpl-custody test",
     "contracts:build": "pnpm --filter @metropolis/contracts build",
-    "contracts:test": "pnpm --filter @metropolis/contracts test"
+    "contracts:test": "pnpm --filter @metropolis/contracts test",
+    "backend:check": "pnpm --filter @metropolis/backend check",
+    "backend:test": "pnpm --filter @metropolis/backend test",
+    "backend:build": "pnpm --filter @metropolis/backend build",
+    "backend:dev": "pnpm --filter @metropolis/backend dev"
   }
 }

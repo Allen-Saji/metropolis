@@ -6,8 +6,11 @@
   "scripts": {
     "check": "tsc --noEmit",
     "build": "tsc && cp src/schema.sql dist/src/schema.sql",
+    "start": "node dist/src/main.js",
+    "dev": "tsx src/main.ts",
     "test": "tsx --test test/*.test.ts",
     "migrate": "tsx src/migrate.ts",
+    "reference-agent": "tsx scripts/reference-agent.ts",
     "format:check": "prettier --check \"{src,test,scripts}/**/*.ts\""
   },
   "dependencies": {
