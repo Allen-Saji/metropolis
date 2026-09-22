@@ -1,0 +1,74 @@
+[
+  {
+    "name": "MetropolisVault",
+    "verificationUrl": "https://sourcify.dev/server/v2/verify/faec8255-54c1-402b-9fd6-e6a6f014fab4",
+    "contract": {
+      "match": "exact_match",
+      "creationMatch": null,
+      "runtimeMatch": "exact_match",
+      "chainId": "10143",
+      "address": "0x410074bc5cf54294810098812b7DFf0432B4EB62",
+      "verifiedAt": "2026-09-22T02:47:34Z",
+      "matchId": "51468388"
+    },
+    "externalVerifications": {
+      "etherscan": {
+        "error": "Daily limit of 500 source code submissions reached"
+      }
+    }
+  },
+  {
+    "name": "QualificationRegistry",
+    "verificationUrl": "https://sourcify.dev/server/v2/verify/19d40808-584e-46fc-ba9c-aa17e2e8ed75",
+    "contract": {
+      "match": "exact_match",
+      "creationMatch": null,
+      "runtimeMatch": "exact_match",
+      "chainId": "10143",
+      "address": "0xAa65CA37866d761955C0f594306C6845734C2d1f",
+      "verifiedAt": "2026-09-22T02:48:34Z",
+      "matchId": "51468424"
+    },
+    "externalVerifications": {
+      "etherscan": {
+        "error": "Daily limit of 500 source code submissions reached"
+      }
+    }
+  },
+  {
+    "name": "PerplAdapter",
+    "verificationUrl": "https://sourcify.dev/server/v2/verify/894aefed-7b2a-46dd-90bf-c2bb8e6dea8f",
+    "contract": {
+      "match": "exact_match",
+      "creationMatch": "exact_match",
+      "runtimeMatch": "exact_match",
+      "chainId": "10143",
+      "address": "0xf2703476A2fcCf10BF0d3A19852a85e1799eeEcF",
+      "verifiedAt": "2026-09-22T02:48:53Z",
+      "matchId": "51468452"
+    },
+    "externalVerifications": {
+      "etherscan": {
+        "error": "Daily limit of 500 source code submissions reached"
+      }
+    }
+  },
+  {
+    "name": "RiskController",
+    "verificationUrl": "https://sourcify.dev/server/v2/verify/24526ecc-6fd4-48f9-883f-58ca75b2c89a",
+    "contract": {
+      "match": "exact_match",
+      "creationMatch": "exact_match",
+      "runtimeMatch": "exact_match",
+      "chainId": "10143",
+      "address": "0xed9Fe0a575764aEaFfAFa7A868259FdDf6B9aC4a",
+      "verifiedAt": "2026-09-22T02:49:11Z",
+      "matchId": "51468457"
+    },
+    "externalVerifications": {
+      "etherscan": {
+        "error": "Max calls per sec rate limit reached (3/sec)"
+      }
+    }
+  }
+]

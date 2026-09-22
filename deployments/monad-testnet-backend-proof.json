@@ -1,0 +1,62 @@
+{
+  "observedAt": "2026-09-22T02:55:40.155Z",
+  "database": "PostgreSQL 17.10 via pg",
+  "runs": [
+    {
+      "agent_id": "1916",
+      "status": "passed",
+      "evidence_hash": "0xac190c2970c8e0a2a130b4d0383a3578e5525a76c8b2b051958aa5c2eb845072"
+    }
+  ],
+  "publications": [
+    {
+      "kind": "qualification",
+      "status": "confirmed",
+      "hash": "0xaf8259d262575d260352ab126389093b3fc0690b8b6dbc831b29e2b53cbbd0f2",
+      "error_code": null
+    }
+  ],
+  "events": [
+    {
+      "name": "OwnershipTransferred",
+      "tx_hash": "0xe278580ed4e014740800d503ce5de902ccd2edfa60581dd55dca54828cdea022",
+      "block_number": "64615401"
+    },
+    {
+      "name": "QualificationRecorded",
+      "tx_hash": "0xaf8259d262575d260352ab126389093b3fc0690b8b6dbc831b29e2b53cbbd0f2",
+      "block_number": "64616401"
+    },
+    {
+      "name": "AgentActivated",
+      "tx_hash": "0xd82f6d240980b10332915843b40c0c5b80e185b604ea9a8f10abda366086dee4",
+      "block_number": "64616577"
+    },
+    {
+      "name": "Transfer",
+      "tx_hash": "0x0b0179880a5b190034ef7e728fda9a3ecd3f51fb1a24639d8580f257eab31a24",
+      "block_number": "64616603"
+    },
+    {
+      "name": "Deposited",
+      "tx_hash": "0x0b0179880a5b190034ef7e728fda9a3ecd3f51fb1a24639d8580f257eab31a24",
+      "block_number": "64616603"
+    },
+    {
+      "name": "Transfer",
+      "tx_hash": "0x0be88f434fc10a9f9e041e4d4b50528c6b7835b0de74d5f34d03a0c1784d6931",
+      "block_number": "64616615"
+    },
+    {
+      "name": "Redeemed",
+      "tx_hash": "0x0be88f434fc10a9f9e041e4d4b50528c6b7835b0de74d5f34d03a0c1784d6931",
+      "block_number": "64616615"
+    }
+  ],
+  "cursor": [
+    {
+      "block_number": "64617130",
+      "block_hash": "0xd61a5014d2f5a6e23aa148b325b3e178901ad7321d80047c50e868aa0d49e1c3"
+    }
+  ]
+}

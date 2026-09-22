@@ -75,8 +75,10 @@ Print the required suite hash without starting the service:
 pnpm --filter @metropolis/backend exec tsx -e 'import { SUITE_HASH } from "./src/qualification.ts"; console.log(SUITE_HASH)'
 ```
 
-No application contracts or backend service have been deployed publicly yet.
-The existing custody-spike deployment is not a compatible application vault.
+Application contracts are deployed on public testnet. The API was run locally
+with PostgreSQL 17.10 and successfully qualified/published the real ERC-8004 agent.
+See [deployment records](../../deployments/README.md). Public API hosting remains
+pending. The earlier custody-spike deployment is a separate integration.
 
 ## API
 
@@ -186,11 +188,12 @@ and discards stale actions if another caller already performed them. Simulation
 failures stay queued; stale ownership/expired qualification requires a new run.
 RPC failure, stale marks or venue withdrawal limits may delay recovery.
 
-Finalized indexing starts at `DEPLOYMENT_BLOCK`, in batches of 200 blocks. Vault,
+Finalized indexing starts at `DEPLOYMENT_BLOCK`, in batches of 100 blocks. Vault,
 adapter and registry logs identify relevant receipts; Perpl events in those
 receipts are decoded and deduplicated by block hash, transaction hash and log
 index. Unknown events retain raw topics/data. Cursor and events commit atomically.
-A changed finalized cursor hash stops the worker for investigation. State reads
+A changed finalized cursor hash stops the worker for investigation. RPC starts are limited to five per second per service instance to respect the
+public endpoint budget. State reads
 are pinned to one finalized block; activity can lag during backfill. Backend
 restarts resume the durable journal and cursor rather than trusting memory.
 
@@ -203,5 +206,6 @@ keeper progression. The local EVM integration uses the real application bytecode
 and actual signatures/RPCs with test venue and identity contracts.
 
 The separate contract fork suite exercises deployed Perpl bytecode. Still pending:
-real ERC-8004 enrollment, this service against the public Perpl deployment,
-hosted PostgreSQL deployment verification, production hosting, and frontend wiring.
+a public Perpl trade through the new vault and keeper recovery, hosted PostgreSQL
+verification, public API hosting, and frontend wiring. Real ERC-8004 enrollment,
+publication, and local PostgreSQL operation against public testnet are verified.

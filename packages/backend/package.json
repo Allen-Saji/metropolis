@@ -11,7 +11,9 @@
     "test": "tsx --test test/*.test.ts",
     "migrate": "tsx src/migrate.ts",
     "reference-agent": "tsx scripts/reference-agent.ts",
-    "format:check": "prettier --check \"{src,test,scripts}/**/*.ts\""
+    "format:check": "prettier --check \"{src,test,scripts}/**/*.ts\"",
+    "testnet:deploy": "tsx scripts/deployment/testnet.ts",
+    "testnet:settled-cycle": "tsx scripts/deployment/settled-cycle.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.3.0",

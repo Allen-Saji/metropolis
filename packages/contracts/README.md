@@ -2,7 +2,8 @@
 
 A single AUSD vault with evaluator-gated agent trading and settled-window share
 conversions. These are the application contracts, separate from the custody spike.
-They are under development for testnet and have not been audited or deployed.
+They are deployed on Monad Testnet with exact runtime matches on Sourcify.
+See [deployment records](../../deployments/README.md). They have not been audited.
 
 ## Build and test
 
@@ -125,10 +126,11 @@ stale data, venue failure and epoch reuse. The fork tests read the historical
 spike position and execute the new vault's deposit/trade/settlement/redemption
 cycle against actual Perpl and AUSD bytecode.
 
-Public-testnet deployment and operation remain unverified for these contracts.
+Public-testnet deployment, qualification, activation and settled deposit/redemption
+are verified. Live application-vault Perpl trading and keeper recovery remain open.
 The API, qualification runner and keeper are implemented in `packages/backend`
-and tested against a local EVM. Frontend, deployment tooling and real ERC-8004
-enrollment remain to be built. Venue contracts, token administrators,
+and tested against a local EVM. Deployment tooling and real ERC-8004 enrollment are implemented and verified;
+frontend integration and public API hosting remain open. Venue contracts, token administrators,
 oracle data and liquidity remain external trust/availability dependencies.
 Settlement has no guaranteed deadline: stale marks, venue failure or insufficient
 liquidity can prevent closure/recovery. The venue may upgrade independently of our

@@ -10,12 +10,15 @@ The application contract package implements a single testnet AUSD vault,
 qualification registry, vault-owned Perpl adapter, and on-chain risk controller.
 It supports deposit, trading, settlement, and redemption with multiple depositors.
 The new contracts are locally tested, including execution against Perpl bytecode
-on a historical Monad Testnet fork. They have not been deployed to public testnet.
+on a historical Monad Testnet fork. They are now deployed on public Monad Testnet
+with exact runtime source matches on Sourcify; see [deployment records](deployments/README.md).
 
 The earlier custody spike separately completed real public-testnet trades. It
 remains an integration reference, not the application vault. The backend API,
 qualification runner, signed-transaction relay and keeper are implemented with PostgreSQL persistence and a local EVM integration test.
-Frontend, public-testnet deployment and hosting remain pending.
+Real ERC-8004 enrollment, PostgreSQL-backed qualification publication, activation,
+and a 100 AUSD settled deposit/redemption have been verified. A Perpl trade through
+the application vault, public API hosting and frontend wiring remain pending.
 This project is not ready for mainnet or real user capital.
 
 ## Repository
