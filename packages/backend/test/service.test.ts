@@ -217,6 +217,36 @@ test("keeper plans close-only recovery and event backfill deduplicates", async (
   await assert.rejects(new Worker(s).tick(), /FINALIZED_CURSOR_MISMATCH/);
 });
 
+test("keeper spends gas on a trading checkpoint only when risk needs attention", async (t) => {
+  const db = await database();
+  t.after(() => db.close());
+  const chain = new FakeChain(),
+    s = new Service(db, chain, "http://localhost:3000");
+  chain.current = {
+    ...chain.current,
+    state: 1,
+    highWaterEquity: "1000",
+    riskAvailable: true,
+    risk: { equity: "950", btcNotional: "200", ethNotional: "0" },
+  };
+  await new Worker(s).tick();
+  assert.equal(
+    (await db.query("SELECT * FROM jobs WHERE kind='keeper'")).length,
+    0,
+  );
+  chain.current = {
+    ...chain.current,
+    risk: { equity: "899", btcNotional: "200", ethNotional: "0" },
+  };
+  await new Worker(s).tick();
+  const jobs = await db.query<Job>("SELECT * FROM jobs WHERE kind='keeper'");
+  assert.equal(jobs.length, 1);
+  assert.equal(
+    "method" in jobs[0]!.payload && jobs[0]!.payload.method,
+    "checkpointRisk",
+  );
+});
+
 test("HTTP routes validate inputs and authorization; no manager mutation endpoint", async (t) => {
   const db = await database();
   const app = await api(

@@ -1,7 +1,26 @@
 import { locked } from "./db.js";
 import { ensure, Fault, json } from "./common.js";
 import type { Service } from "./service.js";
-import type { Job } from "./types.js";
+import type { Job, State } from "./types.js";
+
+function needsRiskCheckpoint(s: State): boolean {
+  if (!s.riskAvailable || !s.risk) return true;
+  try {
+    const risk = s.risk as Record<string, string>;
+    const equity = BigInt(risk.equity!);
+    const btc = BigInt(risk.btcNotional!);
+    const eth = BigInt(risk.ethNotional!);
+    const highWater = BigInt(s.highWaterEquity as string);
+    return (
+      equity * 10_000n < highWater * 9_000n ||
+      btc > equity ||
+      eth > equity ||
+      btc + eth > 2n * equity
+    );
+  } catch {
+    return true;
+  }
+}
 
 export class Worker {
   private running = false;
@@ -32,7 +51,7 @@ export class Worker {
         )
           return;
         let method: string | undefined, argument: string | undefined;
-        if (s.state === 1) method = "checkpointRisk";
+        if (s.state === 1 && needsRiskCheckpoint(s)) method = "checkpointRisk";
         else if (s.state === 2) {
           const open = s.positions.find((p) => BigInt(p.lotLNS) > 0n);
           if (open) {
