@@ -57,11 +57,21 @@ This activates the qualified agent, approves/deposits 100 test AUSD, then redeem
 all resulting shares and reconciles the owner's balance. It does not place a
 Perpl order or bypass the vault's one-hour initial redemption window.
 
-## Remaining verification
+## Live application-vault cycle
 
-A real Perpl trade through this application vault and automatic keeper-driven
-close/recovery are still pending. Existing Perpl trades belong to the earlier
-custody spike, and the application trading flow has passed only local/fork tests.
-The API/PostgreSQL path was verified locally against public testnet; public API
-hosting and frontend integration are not yet live. No user collateral remains
-in the application vault after the settled proof.
+`monad-testnet-live-cycle-proof.json` records the finalized receipts for the
+1,000 AUSD deposit, API-relayed 0.001 BTC Perpl fill, shareholder settlement
+request, keeper close, ten bounded recovery transactions, finalization and
+999.888103 AUSD redemption. An oversized order reverted with `RiskLimit` in a
+read-only simulation. The backend was restarted while the real position was open;
+its database and journal resumed. Finalized reads found zero vault shares, vault
+and adapter AUSD, venue collateral, BTC position and order locks.
+
+The guarded `testnet:live-cycle` command has `open`, `settle` and `fund-keeper`
+phases. It reuses the dedicated testnet signers and stores exact signed bytes in
+private mode-0600 journals. An expired, unbroadcast order requires a fresh attempt
+number via `METROPOLIS_LIVE_TRADE_ATTEMPT` after reconciling its prior hash and
+nonce. Do not reuse this command for another vault or mainnet.
+
+Public API hosting and frontend integration are not yet live. No collateral
+remains in the application vault after the live cycle.

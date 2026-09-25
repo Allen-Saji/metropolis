@@ -13,7 +13,8 @@
     "reference-agent": "tsx scripts/reference-agent.ts",
     "format:check": "prettier --check \"{src,test,scripts}/**/*.ts\"",
     "testnet:deploy": "tsx scripts/deployment/testnet.ts",
-    "testnet:settled-cycle": "tsx scripts/deployment/settled-cycle.ts"
+    "testnet:settled-cycle": "tsx scripts/deployment/settled-cycle.ts",
+    "testnet:live-cycle": "tsx scripts/deployment/live-cycle.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.3.0",

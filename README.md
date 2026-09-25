@@ -13,12 +13,15 @@ The new contracts are locally tested, including execution against Perpl bytecode
 on a historical Monad Testnet fork. They are now deployed on public Monad Testnet
 with exact runtime source matches on Sourcify; see [deployment records](deployments/README.md).
 
-The earlier custody spike separately completed real public-testnet trades. It
-remains an integration reference, not the application vault. The backend API,
-qualification runner, signed-transaction relay and keeper are implemented with PostgreSQL persistence and a local EVM integration test.
-Real ERC-8004 enrollment, PostgreSQL-backed qualification publication, activation,
-and a 100 AUSD settled deposit/redemption have been verified. A Perpl trade through
-the application vault, public API hosting and frontend wiring remain pending.
+The earlier custody spike remains a separate integration reference. The backend
+API, qualification runner, signed-transaction relay and keeper use PostgreSQL
+persistence and have a local EVM integration test. Real ERC-8004 enrollment,
+qualification publication, and a 100 AUSD settled deposit/redemption are verified.
+A later [live application-vault cycle](deployments/monad-testnet-live-cycle-proof.json)
+deposited 1,000 AUSD, relayed a 0.001 BTC Perpl trade, rejected an oversized order
+in simulation, closed through the keeper, and redeemed 999.888103 AUSD. All shares,
+venue collateral, and positions were zero afterward. Public API hosting and
+frontend wiring remain pending.
 This project is not ready for mainnet or real user capital.
 
 ## Repository

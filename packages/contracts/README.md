@@ -127,7 +127,8 @@ spike position and execute the new vault's deposit/trade/settlement/redemption
 cycle against actual Perpl and AUSD bytecode.
 
 Public-testnet deployment, qualification, activation and settled deposit/redemption
-are verified. Live application-vault Perpl trading and keeper recovery remain open.
+are verified. Live application-vault Perpl trading, keeper recovery and redemption
+are also verified; see the deployment proof in `deployments/`.
 The API, qualification runner and keeper are implemented in `packages/backend`
 and tested against a local EVM. Deployment tooling and real ERC-8004 enrollment are implemented and verified;
 frontend integration and public API hosting remain open. Venue contracts, token administrators,

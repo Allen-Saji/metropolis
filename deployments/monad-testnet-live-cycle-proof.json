@@ -1,0 +1,54 @@
+{
+  "chainId": 10143,
+  "vault": "0x410074bc5cf54294810098812b7dff0432b4eb62",
+  "agentId": "1916",
+  "perplAccountId": "707",
+  "market": "BTC",
+  "openLotLNS": "100",
+  "depositedAUSD": "1000.000000",
+  "redeemedAUSD": "999.888103",
+  "riskSimulation": {
+    "oversizedOpenLotLNS": "1000",
+    "revertSelector": "0x7b80ffb2",
+    "name": "RiskLimit",
+    "broadcast": false
+  },
+  "relay": {
+    "idempotencyKey": "live_btc_open_3",
+    "status": "confirmed"
+  },
+  "transactions": {
+    "approve": "0xc748d55e47b26119dbaa33399bda013ba2ede31387ff3b932e7153871ace5eb5",
+    "deposit": "0x14e5b3ec5dd2e40c2d4d07fe996f2b6023a25d7e9ec88bf330ac00f7c78d9592",
+    "startTrading": "0xf06073897e317d2bd73aa0c3b548d411734411f8b47912a3a91c44e7224d709f",
+    "openTrade": "0xfd62eb44119fe648c6694b01c797f188854a47b08d51e3a0e2bf4f9f408f7cc1",
+    "requestSettlement": "0xcef7f352ed092c7e7f4e30f87aa5dd16ea28d0fb90a5ca28a9a1af33bf9094c6",
+    "keeperClose": "0x32c0da567331a896f18f88ca40db8bc93b675a499d24afee58cfb29cdbfa88cf",
+    "keeperRecover": [
+      "0xefd263ad1edffbd9c4ae0a8bbac6b81b26024f4b81ec60275ee72af562293c18",
+      "0x1f2030808bc54c915b246955c93dc440b2488be25c358ca700aaf07f2271de91",
+      "0x5c57f3cdd3f02467a0c2b4bbaa5f7900857096acdc419c08fb4e92b968039788",
+      "0x330955398a55cd6960de4a3169edda3a7e11042878859a1d8b3728f5896c45e6",
+      "0x996a128cc1ea6e3a897ead425550c1c48b7b252726e4b21a4867d0b2b0f1c98e",
+      "0xf52c90defe0389f2a247dc094a535e7fa4bb609fb1d52a559b4e2973ba3bc3bc",
+      "0x5bd49a7f7209306473b725bdda73dc55238d3ebe9c3cf193314c4d4647cdf826",
+      "0xf90443ae151184b1ea7e256def7ca5d413f11415c3b880185c0154e3d9c337d0",
+      "0x5ed288296d220516fbd3f3ca7dae2bb773ba1b23fa047c1aae54e2d218717b0b",
+      "0x42d3b99641a84a2dee8352caaa73c0e3557ed0ad850c85dfa7341799242b9ef1"
+    ],
+    "keeperFinish": "0x2186ce6aa72cb52fc1e2e3ea6951fd1e117ec460545837432275c68b736afb32",
+    "redeem": "0xac3afd829c8b6ce37a360693303db996fce91a12196de8229b8bd8b49d679b85"
+  },
+  "finalizedBlock": "65542819",
+  "finalState": {
+    "vaultState": "settled",
+    "totalShares": "0",
+    "vaultAUSD": "0",
+    "adapterAUSD": "0",
+    "perplBalanceAUSD": "0",
+    "perplLockedAUSD": "0",
+    "btcLotLNS": "0",
+    "perplOrderLocks": 0
+  },
+  "verifiedAt": "2026-09-25T09:57:38.344Z"
+}

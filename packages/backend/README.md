@@ -61,6 +61,10 @@ actions are normally scheduled at least 30 seconds apart. Budget caps are
 
 The backend holds no manager or depositor key. Evaluator and keeper keys must be
 different and are rejected as trade-relay signers. They need testnet MON for gas.
+`BROADCAST_RPC_URL` may point to a second Monad Testnet RPC for signed transaction
+broadcast while `RPC_URL` remains the archive-capable read/indexing endpoint. Both
+chain IDs are checked at startup. The journal and receipt reconciliation still use
+the exact signed bytes and transaction hash.
 Never use the public Anvil development mnemonic outside local tests.
 
 Build the current contract artifacts before starting. The deployed registry must
@@ -77,8 +81,10 @@ pnpm --filter @metropolis/backend exec tsx -e 'import { SUITE_HASH } from "./src
 
 Application contracts are deployed on public testnet. The API was run locally
 with PostgreSQL 17.10 and successfully qualified/published the real ERC-8004 agent.
-See [deployment records](../../deployments/README.md). Public API hosting remains
-pending. The earlier custody-spike deployment is a separate integration.
+It also relayed a real Perpl trade through the application vault and resumed after
+a restart with that position open. See [deployment records](../../deployments/README.md).
+Public API hosting remains pending. The earlier custody-spike deployment is a
+separate integration.
 
 ## API
 
@@ -181,7 +187,8 @@ receipt before any manual repair. The service never manufactures a replacement
 order or silently resets a nonce. Frozen fees may need operator intervention;
 automatic fee-bumped transaction replacement is intentionally absent.
 
-The keeper checkpoints Trading state. In Settling it closes open positions,
+The keeper checks Trading risk off-chain and sends `checkpointRisk` only when a
+breach or unreadable risk state needs an on-chain decision. In Settling it closes open positions,
 recovers collateral in bounded chunks, then finalizes. It has no start-trading,
 activation or withdrawal-to-arbitrary-recipient path. It revalidates queued actions
 and discards stale actions if another caller already performed them. Simulation
@@ -205,7 +212,7 @@ nonces, reverted receipts, event deduplication, finalized cursor mismatch, and
 keeper progression. The local EVM integration uses the real application bytecode
 and actual signatures/RPCs with test venue and identity contracts.
 
-The separate contract fork suite exercises deployed Perpl bytecode. Still pending:
-a public Perpl trade through the new vault and keeper recovery, hosted PostgreSQL
-verification, public API hosting, and frontend wiring. Real ERC-8004 enrollment,
-publication, and local PostgreSQL operation against public testnet are verified.
+The separate contract fork suite exercises deployed Perpl bytecode. The public
+application vault completed a real trade and keeper recovery with local PostgreSQL.
+Hosted PostgreSQL verification, public API hosting, and frontend wiring remain.
+Real ERC-8004 enrollment and publication are verified.
