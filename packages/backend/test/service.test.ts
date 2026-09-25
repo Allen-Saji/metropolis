@@ -142,11 +142,12 @@ test("ambiguous broadcast survives restart and reuses the same signed transactio
   t.after(() => db.close());
   const chain = new FakeChain(),
     s = new Service(db, chain, "http://localhost:3000");
-  await s.trade(lower(operator.address), "request_01", "0x1234");
   chain.throwAfterBroadcast = true;
-  await new Worker(s).tick();
+  await s.trade(lower(operator.address), "request_01", "0x1234");
   const [before] = await db.query<Job>("SELECT * FROM jobs");
   assert.equal(before!.status, "prepared");
+  assert.equal(before!.raw, "0x1234");
+  assert.equal(before!.error_code, "BROADCAST_OR_RECEIPT_UNCERTAIN");
   chain.throwAfterBroadcast = false;
   await new Worker(new Service(db, chain, s.origin)).tick();
   assert.deepEqual(chain.broadcasts, ["0x1234", "0x1234"]);
@@ -171,7 +172,7 @@ test("nonce consumed by an unknown transaction blocks signer instead of issuing 
   await s.trade(lower(operator.address), "request_01", "0x1234");
   chain.consumed = true;
   await new Worker(s).tick();
-  assert.equal(chain.broadcasts.length, 0);
+  assert.equal(chain.broadcasts.length, 1);
   const [row] = await db.query<Job>("SELECT * FROM jobs");
   assert.match(row!.error_code!, /RECONCILIATION_REQUIRED/);
   await assert.rejects(
@@ -346,7 +347,7 @@ test("definitive reverted receipt remains distinct from qualification success", 
     ).status,
     "reverted",
   );
-  assert.equal(chain.broadcasts.length, 0);
+  assert.equal(chain.broadcasts.length, 1);
 });
 
 test("finalized backfill respects the public RPC 100-block range limit", async (t) => {

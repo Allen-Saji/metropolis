@@ -25,6 +25,7 @@ import type { Gateway, Job, State, Prepared, Event } from "./types.js";
 
 export type ChainConfig = {
   rpcUrl: string;
+  broadcastRpcUrl?: string;
   chainId: number;
   vault: Address;
   deploymentBlock: bigint;
@@ -74,6 +75,15 @@ export async function gateway(config: ChainConfig): Promise<Gateway> {
     transport: limitedHttp(config.rpcUrl, config.rpcRequestIntervalMs),
     batch: { multicall: false },
   });
+  const broadcastClient = config.broadcastRpcUrl
+    ? createPublicClient({
+        chain,
+        transport: limitedHttp(
+          config.broadcastRpcUrl,
+          config.rpcRequestIntervalMs,
+        ),
+      })
+    : client;
   const evaluator = privateKeyToAccount(config.evaluatorKey),
     keeper = privateKeyToAccount(config.keeperKey);
   ensure(
@@ -105,6 +115,11 @@ export async function gateway(config: ChainConfig): Promise<Gateway> {
       ...(blockNumber === undefined ? {} : { blockNumber }),
     }) as Promise<T>;
   ensure((await client.getChainId()) === config.chainId, "WRONG_CHAIN");
+  if (broadcastClient !== client)
+    ensure(
+      (await broadcastClient.getChainId()) === config.chainId,
+      "WRONG_BROADCAST_CHAIN",
+    );
   const [registry, adapter, risk, exchange, asset, suite] = await Promise.all([
     read<Address>(config.vault, vaultAbi!, "registry"),
     read<Address>(config.vault, vaultAbi!, "adapter"),
@@ -419,25 +434,22 @@ export async function gateway(config: ChainConfig): Promise<Gateway> {
         throw new Fault("INVALID_TRADE_CALLDATA");
       }
       ensure(decoded.functionName === "executeTrade", "TRADE_METHOD_ONLY", 403);
-      const s = await state();
-      ensure(s.operator === signer, "NOT_ACTIVE_OPERATOR", 403);
-      ensure(
-        tx.nonce ===
-          (await client.getTransactionCount({
-            address: signer,
-            blockTag: "pending",
-          })),
-        "NONCE_CONFLICT",
-        409,
-      );
-      try {
-        await client.call({
+      // The contract simulation checks the selected operator and every risk rule.
+      // Run the independent nonce read concurrently so short Perpl IOC orders
+      // retain enough of their 20-block execution window to reach the chain.
+      const [nonceResult, simulation] = await Promise.allSettled([
+        client.getTransactionCount({ address: signer, blockTag: "pending" }),
+        client.call({
           account: signer,
           to: config.vault,
           data: tx.data,
           gas: tx.gas,
-        });
-      } catch (error) {
+        }),
+      ]);
+      if (nonceResult.status === "rejected") throw nonceResult.reason;
+      ensure(tx.nonce === nonceResult.value, "NONCE_CONFLICT", 409);
+      if (simulation.status === "rejected") {
+        const error = simulation.reason;
         if (
           error instanceof BaseError &&
           error.walk(
@@ -451,7 +463,7 @@ export async function gateway(config: ChainConfig): Promise<Gateway> {
     },
     prepare: prepareCall,
     broadcast: async (raw) => {
-      await client.sendRawTransaction({ serializedTransaction: raw });
+      await broadcastClient.sendRawTransaction({ serializedTransaction: raw });
     },
     receipt: async (hash) => {
       let receipt;

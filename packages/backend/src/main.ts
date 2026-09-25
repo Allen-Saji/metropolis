@@ -22,6 +22,7 @@ async function main() {
       : new URL("../../contracts/out/", import.meta.url);
     const chain = await gateway({
       rpcUrl: c.RPC_URL,
+      broadcastRpcUrl: c.BROADCAST_RPC_URL,
       chainId: 10143,
       vault: c.VAULT_ADDRESS,
       deploymentBlock: BigInt(c.DEPLOYMENT_BLOCK),

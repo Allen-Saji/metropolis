@@ -258,6 +258,16 @@ export class Service {
         ],
       );
     });
+    // The bytes are durable before broadcast. A short-lived IOC order cannot wait
+    // for the next worker tick; any uncertain send is retried with these same bytes.
+    try {
+      await this.chain.broadcast(raw);
+    } catch {
+      await this.db.query(
+        "UPDATE jobs SET error_code='BROADCAST_OR_RECEIPT_UNCERTAIN',updated_at=now() WHERE id=$1",
+        [id],
+      );
+    }
     return this.job(id, wallet);
   }
   async job(id: string, wallet: Address) {

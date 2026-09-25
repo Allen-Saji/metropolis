@@ -160,6 +160,7 @@ test(
     let now = new Date();
     const g = await gateway({
       rpcUrl,
+      broadcastRpcUrl: rpcUrl,
       rpcRequestIntervalMs: 0,
       chainId: 10143,
       vault: vault.toLowerCase() as Address,

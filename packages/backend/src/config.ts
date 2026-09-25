@@ -4,6 +4,7 @@ export function configuration(env = process.env) {
   const schema = z.object({
     DATABASE_URL: z.string().url(),
     RPC_URL: z.string().url(),
+    BROADCAST_RPC_URL: z.string().url().optional(),
     VAULT_ADDRESS: address,
     DEPLOYMENT_BLOCK: z.string().regex(/^[1-9][0-9]*$/),
     APP_ORIGIN: z.string().url(),
