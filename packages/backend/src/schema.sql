@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS events (
  PRIMARY KEY(block_hash, tx_hash, log_index)
 );
 CREATE TABLE IF NOT EXISTS snapshots (
- block_number bigint PRIMARY KEY, block_hash text NOT NULL, data jsonb NOT NULL
+ block_number bigint PRIMARY KEY, block_hash text NOT NULL, data jsonb NOT NULL,
+ created_at timestamptz NOT NULL DEFAULT now()
 );
+ALTER TABLE snapshots ADD COLUMN IF NOT EXISTS created_at timestamptz NOT NULL DEFAULT now();
+CREATE INDEX IF NOT EXISTS snapshots_created_at ON snapshots(created_at);
 CREATE INDEX IF NOT EXISTS recent_events ON events(block_number DESC, log_index DESC);

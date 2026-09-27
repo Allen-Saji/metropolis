@@ -35,10 +35,14 @@ export class Worker {
       await this.service.expire();
       const s = await this.service.chain.state();
       await this.index(BigInt(s.blockNumber));
-      await this.service.db.query(
-        "INSERT INTO snapshots(block_number,block_hash,data) VALUES($1,$2,$3) ON CONFLICT DO NOTHING",
+      const snapshots = await this.service.db.query(
+        "INSERT INTO snapshots(block_number,block_hash,data) SELECT $1,$2,$3 WHERE NOT EXISTS (SELECT 1 FROM snapshots WHERE created_at > now() - interval '1 minute') ON CONFLICT DO NOTHING RETURNING block_number",
         [s.blockNumber, s.blockHash, json(s)],
       );
+      if (snapshots.length)
+        await this.service.db.query(
+          "DELETE FROM snapshots WHERE created_at < now() - interval '7 days'",
+        );
       await locked(this.service.db, async (sql) => {
         const [last] = await sql.query<Job>(
           "SELECT * FROM jobs WHERE kind='keeper' ORDER BY created_at DESC LIMIT 1",
