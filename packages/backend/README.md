@@ -48,6 +48,7 @@ Set it to `true` to run the journal, indexer and keeper every five seconds. Keep
 actions are normally scheduled at least 30 seconds apart. Budget caps are
 `MAX_TX_GAS` and `MAX_FEE_PER_GAS`; estimated gas receives a 10% buffer.
 `RECOVERY_CHUNK` is the maximum AUSD base units per recovery transaction.
+Snapshots are recorded at most once per minute and retained for seven days.
 
 ## Signers and deployment requirements
 
@@ -83,8 +84,13 @@ Application contracts are deployed on public testnet. The API was run locally
 with PostgreSQL 17.10 and successfully qualified/published the real ERC-8004 agent.
 It also relayed a real Perpl trade through the application vault and resumed after
 a restart with that position open. See [deployment records](../../deployments/README.md).
-Public API hosting remains pending. The earlier custody-spike deployment is a
-separate integration.
+The public testnet API is at https://backend-production-e090.up.railway.app.
+Railway runs one always-on Singapore replica against Supabase PostgreSQL. The
+root Dockerfile builds the contract ABIs and backend, and bundles Supabase's CA
+certificate for verified TLS. `/health` checks the database and `/ready` checks
+the current chain state. The current `APP_ORIGIN` is `http://localhost:3000` for
+local frontend development; update it when the frontend has a public origin.
+The earlier custody-spike deployment is a separate integration.
 
 ## API
 
