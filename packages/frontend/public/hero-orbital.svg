@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="halo" cx="67%" cy="43%" r="42%">
+      <stop offset="0" stop-color="#52a8ff" stop-opacity=".22"/>
+      <stop offset=".5" stop-color="#52a8ff" stop-opacity=".055"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="core" cx="38%" cy="32%" r="70%">
+      <stop offset="0" stop-color="#ededed" stop-opacity=".56"/>
+      <stop offset=".18" stop-color="#52a8ff" stop-opacity=".37"/>
+      <stop offset=".55" stop-color="#07101c"/>
+      <stop offset="1" stop-color="#000"/>
+    </radialGradient>
+    <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#52a8ff" stop-opacity="0"/>
+      <stop offset=".48" stop-color="#52a8ff" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#ededed" stop-opacity=".08"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="35"/></filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ededed" stroke-opacity=".075" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#000"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <rect width="1600" height="900" fill="url(#halo)"/>
+  <g transform="translate(1050 405)">
+    <circle r="340" fill="#52a8ff" opacity=".11" filter="url(#blur)"/>
+    <circle r="242" fill="url(#core)" stroke="#ededed" stroke-opacity=".13"/>
+    <circle r="217" fill="none" stroke="#ededed" stroke-opacity=".13" stroke-dasharray="1 8"/>
+    <circle r="170" fill="none" stroke="#52a8ff" stroke-opacity=".35"/>
+    <circle r="121" fill="none" stroke="#ededed" stroke-opacity=".17" stroke-dasharray="4 10"/>
+    <circle r="66" fill="#000" stroke="#52a8ff" stroke-opacity=".6"/>
+    <path d="M-34 0h68M0-34v68" stroke="#52a8ff" stroke-opacity=".85"/>
+    <circle r="18" fill="#52a8ff" opacity=".22"/>
+    <ellipse rx="360" ry="92" transform="rotate(-27)" fill="none" stroke="url(#orbit)" stroke-width="2"/>
+    <ellipse rx="295" ry="310" transform="rotate(33)" fill="none" stroke="#ededed" stroke-opacity=".17" stroke-dasharray="4 8"/>
+    <path d="M-340 0h-95M340 0h95M0-340v-65M0 340v65" stroke="#ededed" stroke-opacity=".25"/>
+    <g fill="#52a8ff"><circle cx="-315" cy="150" r="4"/><circle cx="291" cy="-181" r="3"/><circle cx="119" cy="-227" r="3"/></g>
+    <g fill="#999" font-family="monospace" font-size="10" letter-spacing="2">
+      <text x="-470" y="-18">SYS.01 / RISK GATE</text>
+      <text x="320" y="-225">AGENT ONLINE</text>
+      <text x="155" y="320">MONAD TESTNET // 10143</text>
+    </g>
+  </g>
+  <g stroke="#ededed" stroke-opacity=".12" fill="none"><path d="M0 745H1600M0 665H1600"/><path d="M80 0V900M1520 0V900"/></g>
+  <g fill="#999" font-family="monospace" font-size="11" letter-spacing="3"><text x="80" y="700">CAPITAL / POLICY / EXECUTION</text><text x="80" y="780">[ TRUST IS A STATE, NOT A PROMISE ]</text></g>
+</svg>

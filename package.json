@@ -16,6 +16,9 @@
     "backend:check": "pnpm --filter @metropolis/backend check",
     "backend:test": "pnpm --filter @metropolis/backend test",
     "backend:build": "pnpm --filter @metropolis/backend build",
-    "backend:dev": "pnpm --filter @metropolis/backend dev"
+    "backend:dev": "pnpm --filter @metropolis/backend dev",
+    "frontend:dev": "pnpm --filter @metropolis/frontend dev",
+    "frontend:check": "pnpm --filter @metropolis/frontend check",
+    "frontend:build": "pnpm --filter @metropolis/frontend build"
   }
 }

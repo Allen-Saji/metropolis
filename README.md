@@ -20,8 +20,12 @@ qualification publication, and a 100 AUSD settled deposit/redemption are verifie
 A later [live application-vault cycle](deployments/monad-testnet-live-cycle-proof.json)
 deposited 1,000 AUSD, relayed a 0.001 BTC Perpl trade, rejected an oversized order
 in simulation, closed through the keeper, and redeemed 999.888103 AUSD. All shares,
-venue collateral, and positions were zero afterward. Public API hosting and
-frontend wiring remain pending.
+venue collateral, and positions were zero afterward. The testnet API is hosted at
+https://backend-production-e090.up.railway.app on Railway Hobby with Supabase
+PostgreSQL. The local frontend reads the hosted API and public Monad Testnet
+contracts. It includes a live console, wallet deposit/redemption and manager
+controls, qualification flow, event stream and risk-policy display. See the
+[frontend guide](packages/frontend/README.md).
 This project is not ready for mainnet or real user capital.
 
 ## Repository
@@ -31,6 +35,8 @@ This project is not ready for mainnet or real user capital.
   for permissions, risk policy, accounting, and frontend integration.
 - `packages/backend/`: Fastify API, qualification runner, transaction journal,
   finalized indexer and keeper. See [backend documentation](packages/backend/README.md).
+- `packages/frontend/`: React terminal for live vault reads and wallet actions.
+  See [frontend documentation](packages/frontend/README.md).
 - `spikes/perpl-custody/`: original custody proof and read-only accounting probes.
 
 ## Development
@@ -47,7 +53,12 @@ pnpm spike:test
 pnpm backend:check
 pnpm backend:test
 pnpm backend:build
+pnpm frontend:check
+pnpm frontend:build
 ```
+
+Run the local frontend with `pnpm frontend:dev` and open
+`http://localhost:3000`. The hosted API currently allows that exact origin.
 
 To run the optional historical fork integration tests:
 
