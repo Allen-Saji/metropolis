@@ -22,10 +22,15 @@ deposited 1,000 AUSD, relayed a 0.001 BTC Perpl trade, rejected an oversized ord
 in simulation, closed through the keeper, and redeemed 999.888103 AUSD. All shares,
 venue collateral, and positions were zero afterward. The testnet API is hosted at
 https://backend-production-e090.up.railway.app on Railway Hobby with Supabase
-PostgreSQL. The local frontend reads the hosted API and public Monad Testnet
+PostgreSQL. The frontend reads the hosted API and public Monad Testnet
 contracts. It includes a live console, wallet deposit/redemption and manager
 controls, qualification flow, event stream and risk-policy display. See the
 [frontend guide](packages/frontend/README.md).
+The public testnet frontend is at https://metropolis-vault-testnet.pages.dev.
+An [October 11 rehearsal](deployments/monad-testnet-rehearsal-proof.json) repeated
+qualification, a real Perpl fill, risk rejection, keeper settlement and
+redemption. A separate hosted Backpack wallet test completed a 1 AUSD deposit
+and full redemption. The vault is settled with zero shares and positions.
 This project is not ready for mainnet or real user capital.
 
 ## Repository

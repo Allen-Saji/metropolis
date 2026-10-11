@@ -1,0 +1,67 @@
+{
+  "chainId": 10143,
+  "vault": "0x410074bc5cf54294810098812b7dff0432b4eb62",
+  "agentId": "1916",
+  "perplAccountId": "707",
+  "market": "BTC",
+  "qualification": {
+    "runId": "fba5c49a-2432-4199-ad2f-e636aaf7a3d7",
+    "evidenceHash": "0xa3e6f11ed9fd0af517a9dad978ae23586ea615d9806bf60790ca6f1cb5b0846d",
+    "expiresAt": "1792336058",
+    "passed": true
+  },
+  "depositedAUSD": "1000.000000",
+  "openLotLNS": "100",
+  "activationSimulation": {
+    "unqualifiedAgentId": "1917",
+    "revertSelector": "0xb2cab429",
+    "name": "Unqualified",
+    "broadcast": false
+  },
+  "riskSimulation": {
+    "oversizedOpenLotLNS": "1000",
+    "revertSelector": "0x7b80ffb2",
+    "name": "RiskLimit",
+    "broadcast": false
+  },
+  "relay": {
+    "idempotencyKey": "live_btc_open_1",
+    "status": "confirmed"
+  },
+  "redeemedAUSD": "999.922797",
+  "transactions": {
+    "qualification": "0x79f313e2d0c31dd7a3ba590520fb0bcfb6565a34b1f2ddc0024a973775f27051",
+    "approve": "0x06a13bbd8b9f7151cc1d62a63f1568c8ecdb19934b305497d39910f8d9aa4aba",
+    "deposit": "0x747ffe29cc0599e7525e55d9ed9e44238a547e0bbdb69f3c54c3f95de311d148",
+    "startTrading": "0xf118321c19c91c6a578c23a78aa798eeba8d0c70206b8bcb0db14eb988d5a927",
+    "openTrade": "0xc989e134dfccec8217c3d337a2529e06ebf7d654fa544930c12991b5220ee826",
+    "requestSettlement": "0xeca46f107819309fb6efb0036ff168a83da5a73fc33b956f3cf1414c41504036",
+    "keeperClose": "0xb6cd3fe4aa75ec0327b71330fdc11f27b7230a1618d90215729ccb3922beabb1",
+    "keeperRecover": [
+      "0x64070aaded1134fa55f380bb456a5573f97ae1d538481b9f96a80257452bcf49",
+      "0xf445265f3b94f3b21ece9453081e3fb111cb717aa55b478ae8c263cd9a91797c",
+      "0xab8548d33d9af70299832bbf40dd7b44fdb76a5998653cf0c0cc5ca019a6f100",
+      "0xf573e5e71dc6acc665d2d671185a5256b0b04c2f1cd58a19cc1528e4d7f97615",
+      "0xc4eb974edd6d3ffb02ba536fb548b4c7e4634777197ff00d50b1db8ac2d13828",
+      "0xf521e5d1a8417fa0ef4ecaf776d8e34ab5db816f15d009fb965a0e5eea148aed",
+      "0x78cb2d5da95b268bfc1880c15a91c4373f2268925c18252d3a5224e671bd07ea",
+      "0x28d33d769500537bc43d25a7cb85b2f1849e05d1908ddad9cbe9729a4defc6ce",
+      "0xb4da815fa5259e33c3261cd1ce7529726bcfc349eefadffcd12d03fa8f7d671e",
+      "0x19d6fd028c30cb4e6593c088d1e309047a0d4b23a04c21cd83143ad9b6e5a747"
+    ],
+    "keeperFinish": "0xd67bf80656aa301dc1b43d1cb248db8760b9ed13d12a63a58772f4ee8ae1818a",
+    "redeem": "0x91059ca25757a0589786dbb323d17e15f23e4f7a73415623ddac2421c94f0c4e"
+  },
+  "verifiedBlock": "70145477",
+  "finalState": {
+    "vaultState": "settled",
+    "totalShares": "0",
+    "vaultAUSD": "0",
+    "adapterAUSD": "0",
+    "perplBalanceAUSD": "0",
+    "perplLockedAUSD": "0",
+    "btcLotLNS": "0",
+    "openPositions": 0
+  },
+  "verifiedAt": "2026-10-11T15:21:02Z"
+}

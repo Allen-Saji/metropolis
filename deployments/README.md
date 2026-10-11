@@ -67,11 +67,19 @@ read-only simulation. The backend was restarted while the real position was open
 its database and journal resumed. Finalized reads found zero vault shares, vault
 and adapter AUSD, venue collateral, BTC position and order locks.
 
+`monad-testnet-rehearsal-proof.json` records an October 11 repeat with a fresh
+qualification, an unqualified-agent activation rejection in simulation, a
+real 0.001 BTC Perpl fill, an oversized-order risk rejection in simulation,
+keeper close and recovery, and 999.922797 AUSD redemption from a 1,000 AUSD
+deposit. Final reads again found zero shares, collateral and positions.
+
 The guarded `testnet:live-cycle` command has `open`, `settle` and `fund-keeper`
 phases. It reuses the dedicated testnet signers and stores exact signed bytes in
 private mode-0600 journals. An expired, unbroadcast order requires a fresh attempt
 number via `METROPOLIS_LIVE_TRADE_ATTEMPT` after reconciling its prior hash and
-nonce. Do not reuse this command for another vault or mainnet.
+nonce. Set `METROPOLIS_LIVE_CYCLE_JOURNAL` to a new
+`testnet-live-cycle-vN` name for each fresh cycle; the default is
+`testnet-live-cycle-v1`. Do not reuse this command for another vault or mainnet.
 
-Public API hosting and frontend integration are not yet live. No collateral
-remains in the application vault after the live cycle.
+The public API runs on Railway and the frontend on Cloudflare Pages. No
+collateral remains in the application vault after the rehearsal.
