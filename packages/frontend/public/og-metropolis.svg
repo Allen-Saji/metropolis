@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Metropolis</title>
+  <desc id="desc">The agent can trade. It can't cash out. AUSD vault and qualified Perpl execution on Monad Testnet.</desc>
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#ededed" stroke-opacity=".06"/></pattern>
+    <radialGradient id="glow"><stop stop-color="#52a8ff" stop-opacity=".16"/><stop offset="1" stop-color="#52a8ff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#050607"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="960" cy="315" r="420" fill="url(#glow)"/>
+  <path d="M48 48h26M48 48v26M1152 556v26h-26" fill="none" stroke="#52a8ff" stroke-width="2"/>
+  <g transform="translate(66 65) scale(1.65)" fill="none" stroke="#ededed">
+    <path d="M2 25V5h6l7 10L22 5h6v20h-5V12l-8 10L7 12v13H2Z" stroke-width="1.5"/>
+    <path d="M2 2h26M2 28h26" stroke-width="1"/>
+  </g>
+  <text x="132" y="107" fill="#ededed" font-family="DejaVu Sans,sans-serif" font-size="34" letter-spacing="-2">metropolis<tspan fill="#52a8ff">.</tspan></text>
+  <text x="1134" y="94" text-anchor="end" fill="#999" font-family="DejaVu Sans Mono,monospace" font-size="15" letter-spacing="1">MONAD TESTNET / 10143</text>
+  <path d="M66 147H1134" stroke="#ededed" stroke-opacity=".2"/>
+  <text x="66" y="231" fill="#52a8ff" font-family="DejaVu Sans Mono,monospace" font-size="16" letter-spacing="2">[ AGENT MANDATE / TRADES ONLY ]</text>
+  <text x="66" y="320" fill="#fff" font-family="DejaVu Sans,sans-serif" font-size="59" font-weight="600" letter-spacing="-4">The agent can trade.</text>
+  <text x="66" y="396" fill="#b6d7f7" font-family="DejaVu Sans,sans-serif" font-size="59" font-weight="600" letter-spacing="-4">It can't cash out.</text>
+  <text x="68" y="467" fill="#c9c9c9" font-family="DejaVu Sans,sans-serif" font-size="21">AUSD vault custody. Qualified BTC and ETH orders on Perpl.</text>
+  <rect x="838" y="254" width="298" height="216" fill="none" stroke="#52a8ff" transform="rotate(5 987 362)"/>
+  <g transform="translate(831 254) rotate(-7 149 108)" font-family="DejaVu Sans Mono,monospace">
+    <path d="M0 0H278L298 20V216H20L0 196Z" fill="#ededed"/>
+    <text x="20" y="28" fill="#121212" font-size="10" font-weight="bold">METROPOLIS</text>
+    <text x="278" y="28" text-anchor="end" fill="#121212" font-size="9">EXECUTION MANDATE</text>
+    <path d="M20 43H278" stroke="#121212"/>
+    <text x="20" y="71" fill="#121212" font-size="9">ASSIGNED AGENT</text>
+    <text x="20" y="119" fill="#121212" font-family="DejaVu Sans,sans-serif" font-size="47" font-weight="bold" letter-spacing="-3">VOID</text>
+    <text x="20" y="159" fill="#121212" font-family="DejaVu Sans,sans-serif" font-size="47" font-weight="bold" letter-spacing="-3">JACKAL</text>
+    <g transform="translate(185 70) scale(3.3)" fill="none" stroke="#121212" stroke-opacity=".17">
+      <path d="M2 25V5h6l7 10L22 5h6v20h-5V12l-8 10L7 12v13H2Z" stroke-width="1.5"/>
+      <path d="M2 2h26M2 28h26" stroke-width="1"/>
+    </g>
+    <rect y="174" width="298" height="24" fill="#121212"/>
+    <text x="18" y="190" fill="#ededed" font-size="9">SIGNED IOC ORDERS</text>
+    <text x="278" y="190" text-anchor="end" fill="#52a8ff" font-size="10">ALLOWED -&gt;</text>
+    <text x="20" y="211" fill="#121212" font-size="8">WITHDRAWAL / NO ACCESS</text>
+  </g>
+  <path d="M66 531H1134" stroke="#ededed" stroke-opacity=".2"/>
+  <text x="66" y="575" fill="#999" font-family="DejaVu Sans Mono,monospace" font-size="15" letter-spacing="1">METROPOLIS / LIVE TESTNET VAULT</text>
+  <text x="1134" y="575" text-anchor="end" fill="#52a8ff" font-family="DejaVu Sans Mono,monospace" font-size="15">metropolis.allensaji.dev</text>
+</svg>

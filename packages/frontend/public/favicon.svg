@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title">
+  <title id="title">Metropolis</title>
+  <rect width="120" height="120" fill="#0a0a0a"/>
+  <path d="M8 8h28M8 8v28M112 84v28H84" fill="none" stroke="#52a8ff" stroke-width="2"/>
+  <g transform="translate(22.5 22.5) scale(2.5)" fill="none" stroke="#ededed">
+    <path d="M2 25V5h6l7 10L22 5h6v20h-5V12l-8 10L7 12v13H2Z" stroke-width="1.5"/>
+    <path d="M2 2h26M2 28h26" stroke-width="1"/>
+  </g>
+</svg>
