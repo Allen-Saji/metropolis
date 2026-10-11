@@ -146,7 +146,13 @@ async function main() {
       "utf8",
     ),
   ).abi;
-  const journal = join(directory, "testnet-live-cycle-v1");
+  const journalName =
+    process.env.METROPOLIS_LIVE_CYCLE_JOURNAL ?? "testnet-live-cycle-v1";
+  ensure(
+    /^testnet-live-cycle-v[1-9][0-9]*$/.test(journalName),
+    "INVALID_JOURNAL_NAME",
+  );
+  const journal = join(directory, journalName);
   await mkdir(journal, { recursive: true, mode: 0o700 });
   if (process.argv[2] === "fund-keeper") {
     const receipt = await sendStep(journal, "fund-keeper", owner, {
@@ -217,6 +223,11 @@ async function main() {
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
       const btc = await market();
+      const orderId = (await publicClient.readContract({
+        address: vault,
+        abi: vaultAbi,
+        functionName: "nextOrderId",
+      })) as bigint;
       const price = BigInt(Math.ceil(btc.state.ask * 1.001));
       const mark = BigInt(btc.state.mrk);
       ensure(
@@ -224,7 +235,7 @@ async function main() {
         "PRICE_OUTSIDE_RISK_BOUND",
       );
       const order = {
-        orderDescId: 1n,
+        orderDescId: orderId,
         perpId: 16n,
         orderType: 0,
         orderId: 0n,
@@ -307,7 +318,6 @@ async function main() {
     const live = await request(`/v1/vaults/${vault}/state`);
     ensure(
       live.state === 1 &&
-        live.nextOrderId === "2" &&
         live.positions.some(
           (position: { perpId: string; lotLNS: string }) =>
             position.perpId === "16" && BigInt(position.lotLNS) > 0n,
