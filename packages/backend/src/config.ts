@@ -8,6 +8,7 @@ export function configuration(env = process.env) {
     VAULT_ADDRESS: address,
     DEPLOYMENT_BLOCK: z.string().regex(/^[1-9][0-9]*$/),
     APP_ORIGIN: z.string().url(),
+    APP_ADDITIONAL_ORIGINS: z.string().default(""),
     EVALUATOR_PRIVATE_KEY: z.string().regex(/^0x[0-9a-fA-F]{64}$/),
     KEEPER_PRIVATE_KEY: z.string().regex(/^0x[0-9a-fA-F]{64}$/),
     PORT: z.coerce.number().int().min(1).max(65535).default(3001),
@@ -34,5 +35,10 @@ export function configuration(env = process.env) {
     new URL(c.APP_ORIGIN).origin === c.APP_ORIGIN,
     "APP_ORIGIN_MUST_BE_ORIGIN",
   );
+  for (const origin of c.APP_ADDITIONAL_ORIGINS.split(",").filter(Boolean))
+    ensure(
+      new URL(origin).origin === origin,
+      "APP_ADDITIONAL_ORIGINS_MUST_BE_ORIGINS",
+    );
   return c;
 }

@@ -88,8 +88,10 @@ The public testnet API is at https://backend-production-e090.up.railway.app.
 Railway runs one always-on Singapore replica against Supabase PostgreSQL. The
 root Dockerfile builds the contract ABIs and backend, and bundles Supabase's CA
 certificate for verified TLS. `/health` checks the database and `/ready` checks
-the current chain state. The current `APP_ORIGIN` is `http://localhost:3000` for
-local frontend development; update it when the frontend has a public origin.
+the current chain state. Set `APP_ORIGIN` to the exact public frontend origin.
+`APP_ADDITIONAL_ORIGINS` is an optional comma-separated list of other exact
+origins, such as `http://localhost:3000` for local development. CORS allows
+only these origins, and SIWE challenges use the requesting allowed origin.
 The earlier custody-spike deployment is a separate integration.
 
 ## API

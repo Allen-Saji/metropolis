@@ -17,7 +17,7 @@ export async function api(service: Service, logging = true) {
   });
   await app.register(rateLimit, { max: 60, timeWindow: "1 minute" });
   await app.register(cors, {
-    origin: service.origin,
+    origin: service.allowedOrigins,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
   });
@@ -51,7 +51,10 @@ export async function api(service: Service, logging = true) {
     { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } },
     async (req) => {
       const body = z.object({ address }).strict().parse(req.body);
-      return service.challenge(body.address);
+      return service.challenge(
+        body.address,
+        req.headers.origin ?? service.origin,
+      );
     },
   );
   app.post("/v1/auth/verify", async (req) => {

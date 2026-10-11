@@ -52,7 +52,13 @@ async function main() {
           [binding],
         );
     });
-    const service = new Service(db, chain, c.APP_ORIGIN),
+    const service = new Service(
+        db,
+        chain,
+        c.APP_ORIGIN,
+        undefined,
+        c.APP_ADDITIONAL_ORIGINS.split(",").filter(Boolean),
+      ),
       worker = new Worker(service, BigInt(c.RECOVERY_CHUNK));
     const app = await api(service);
     let stopping = false;

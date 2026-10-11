@@ -18,16 +18,21 @@ export class Service {
     readonly chain: Gateway,
     readonly origin: string,
     readonly now = () => new Date(),
+    readonly additionalOrigins: readonly string[] = [],
   ) {}
-  async challenge(wallet: Address) {
+  get allowedOrigins(): string[] {
+    return [this.origin, ...this.additionalOrigins];
+  }
+  async challenge(wallet: Address, origin = this.origin) {
+    ensure(this.allowedOrigins.includes(origin), "ORIGIN_NOT_ALLOWED", 403);
     const nonce = token(),
       issuedAt = this.now(),
       expiry = new Date(issuedAt.getTime() + 300_000);
     const message = createSiweMessage({
       address: wallet,
       chainId: this.chain.chainId,
-      domain: new URL(this.origin).host,
-      uri: this.origin,
+      domain: new URL(origin).host,
+      uri: origin,
       version: "1",
       nonce,
       issuedAt,

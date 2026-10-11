@@ -13,6 +13,7 @@ import {
 } from "./helpers.js";
 import type { Job } from "../src/types.js";
 import { evidenceHash } from "../src/common.js";
+import { parseSiweMessage } from "viem/siwe";
 
 test("SIWE challenge is exact, single-use and session tokens are hashed", async (t) => {
   const db = await database();
@@ -43,6 +44,41 @@ test("SIWE challenge is exact, single-use and session tokens are hashed", async 
     "SELECT token_hash FROM sessions",
   );
   assert.notEqual(rows[0]!.token_hash, session.token);
+});
+
+test("browser origins receive matching CORS and SIWE challenges", async (t) => {
+  const db = await database();
+  const publicOrigin = "https://metropolis-vault-testnet.pages.dev";
+  const localOrigin = "http://localhost:3000";
+  const app = await api(
+    new Service(db, new FakeChain(), publicOrigin, undefined, [localOrigin]),
+    false,
+  );
+  t.after(async () => {
+    await app.close();
+    await db.close();
+  });
+  for (const origin of [publicOrigin, localOrigin]) {
+    const response = await app.inject({
+      method: "POST",
+      url: "/v1/auth/nonce",
+      headers: { origin },
+      payload: { address: owner.address },
+    });
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.headers["access-control-allow-origin"], origin);
+    const challenge = parseSiweMessage(response.json().message);
+    assert.equal(challenge.domain, new URL(origin).host);
+    assert.equal(challenge.uri, origin);
+  }
+  const denied = await app.inject({
+    method: "POST",
+    url: "/v1/auth/nonce",
+    headers: { origin: "https://untrusted.example" },
+    payload: { address: owner.address },
+  });
+  assert.equal(denied.statusCode, 403);
+  assert.equal(denied.json().error, "ORIGIN_NOT_ALLOWED");
 });
 
 test("qualification requires owner consent; actions are operator-only and idempotent", async (t) => {
