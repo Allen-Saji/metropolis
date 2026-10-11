@@ -1,57 +1,97 @@
-# Metropolis
+<p align="center">
+  <img src="assets/metropolis-mark.svg" alt="Metropolis logo" width="112" height="112">
+</p>
 
-Metropolis is a trust-gated agentic trading vault for Monad. An agent must pass a
-qualification before it can trade vault collateral. Users receive shares, observe
-risk, and redeem after positions close and collateral returns to the vault.
+<h1 align="center">Metropolis</h1>
 
-## Implementation status
+Metropolis is an AUSD vault on Monad Testnet that gives a qualified trading agent
+limited access to Perpl. Depositors hold vault shares. An agent can place
+immediate-or-cancel BTC or ETH orders only after a qualification is published
+on-chain, and every order passes the vault's risk checks. Share conversions resume
+after positions are closed and collateral has returned to the vault.
 
-The application contract package implements a single testnet AUSD vault,
-qualification registry, vault-owned Perpl adapter, and on-chain risk controller.
-It supports deposit, trading, settlement, and redemption with multiple depositors.
-The new contracts are locally tested, including execution against Perpl bytecode
-on a historical Monad Testnet fork. They are now deployed on public Monad Testnet
-with exact runtime source matches on Sourcify; see [deployment records](deployments/README.md).
+The [testnet app](https://metropolis-vault-testnet.pages.dev) exposes live vault
+state, wallet actions, qualification, risk policy and indexed transactions.
+[Deployment records](deployments/README.md) contain contract addresses, source
+verification and transaction receipts.
 
-The earlier custody spike remains a separate integration reference. The backend
-API, qualification runner, signed-transaction relay and keeper use PostgreSQL
-persistence and have a local EVM integration test. Real ERC-8004 enrollment,
-qualification publication, and a 100 AUSD settled deposit/redemption are verified.
-A later [live application-vault cycle](deployments/monad-testnet-live-cycle-proof.json)
-deposited 1,000 AUSD, relayed a 0.001 BTC Perpl trade, rejected an oversized order
-in simulation, closed through the keeper, and redeemed 999.888103 AUSD. All shares,
-venue collateral, and positions were zero afterward. The testnet API is hosted at
-https://backend-production-e090.up.railway.app on Railway Hobby with Supabase
-PostgreSQL. The frontend reads the hosted API and public Monad Testnet
-contracts. It includes a live console, wallet deposit/redemption and manager
-controls, qualification flow, event stream and risk-policy display. See the
-[frontend guide](packages/frontend/README.md).
-The public testnet frontend is at https://metropolis-vault-testnet.pages.dev.
-An [October 11 rehearsal](deployments/monad-testnet-rehearsal-proof.json) repeated
-qualification, a real Perpl fill, risk rejection, keeper settlement and
-redemption. A separate hosted Backpack wallet test completed a 1 AUSD deposit
-and full redemption. The vault is settled with zero shares and positions.
-This project is not ready for mainnet or real user capital.
+## How it works
 
-## Repository
+1. An ERC-8004 agent's identity owner starts a qualification run. Its assigned
+   operator executes a public, deterministic policy exercise. The evaluator
+   records the result in `QualificationRegistry`, bound to the agent, identity
+   owner, operator and suite.
+2. Depositors add AUSD while the vault is Settled and receive shares. The manager
+   selects a qualified agent and allocates vault collateral to its Perpl account.
+3. The agent signs an IOC order. The Fastify relay checks authorization and
+   transaction identity; `MetropolisVault` and `RiskController` enforce the
+   trading limits on-chain. `PerplAdapter` owns the venue account. The operator
+   cannot withdraw or transfer collateral.
+4. The manager or any shareholder can request settlement. A keeper closes
+   positions, recovers collateral and finalizes the vault. Depositors can then
+   redeem shares for the assets actually available.
 
-- `packages/contracts/`: application Solidity contracts, unit/fuzz tests, and
-  optional Perpl fork tests. See [contract documentation](packages/contracts/README.md)
-  for permissions, risk policy, accounting, and frontend integration.
-- `packages/backend/`: Fastify API, qualification runner, transaction journal,
-  finalized indexer and keeper. See [backend documentation](packages/backend/README.md).
-- `packages/frontend/`: React terminal for live vault reads and wallet actions.
-  See [frontend documentation](packages/frontend/README.md).
-- `spikes/perpl-custody/`: original custody proof and read-only accounting probes.
+The vault has one active operator at a time. The fixed policy allows BTC and ETH,
+caps a new order at 25% of current equity, caps aggregate exposure at 2x equity,
+and blocks new exposure after a 10% observed drawdown. Stale or unavailable risk
+data also blocks new exposure. See [contract design](packages/contracts/README.md)
+for the full policy, accounting rules and lifecycle conditions.
 
-## Development
+## System layout
 
-Requires pnpm 10.8.1 and Foundry (tested with 1.5.1). Solidity 0.8.28 is configured
-in the contract package; OpenZeppelin dependencies are pinned in the lockfile.
+| Component | Responsibility |
+| --- | --- |
+| [Contracts](packages/contracts/README.md) | Shares, lifecycle, qualification gate, Perpl custody and risk enforcement |
+| [Backend](packages/backend/README.md) | SIWE sessions, qualification runner, signed-order relay, finalized event indexer and recovery keeper |
+| [Frontend](packages/frontend/README.md) | Live state and activity, wallet deposits and redemptions, manager controls and qualification workflow |
+| PostgreSQL | Qualification evidence, sessions, transaction journal and indexed activity |
+
+The backend holds evaluator and keeper keys. It does not hold depositor, manager or
+agent operator keys. The qualification suite is public and deterministic; passing
+it establishes that the operator completed these bounded exercises, not that it
+will trade profitably. Trade execution and withdrawals remain subject to the
+contracts even when the backend is unavailable.
+
+## Testnet deployment
+
+- Chain: Monad Testnet, chain ID `10143`.
+- App: https://metropolis-vault-testnet.pages.dev
+- API: https://backend-production-e090.up.railway.app
+- Contracts and receipts: [deployment records](deployments/README.md).
+
+The [October 11 testnet run](deployments/monad-testnet-rehearsal-proof.json)
+records a published qualification, 1,000 AUSD deposit, real 0.001 BTC Perpl
+fill, settlement through the keeper, and 999.922797 AUSD redemption. The
+oversized-order and unqualified-agent checks in that record were read-only
+simulations; they were not broadcast transactions. The final recorded state has
+zero shares, venue collateral and open positions. A separate Backpack browser
+test completed a 1 AUSD deposit and full redemption through the hosted app.
+
+These are testnet results, not a return forecast. The contracts have not been
+audited. Venue liquidity, price data and contract availability affect execution
+and settlement; there is no guaranteed settlement time. The vault is not
+ERC-4626, and estimated equity during trading is not a redemption quote. Do not
+use it with mainnet funds.
+
+## Run locally
+
+Install Node.js 22 or newer, pnpm 10.8.1 and Foundry. The frontend can use the
+hosted testnet API without a local database or secret file.
 
 ```bash
 pnpm install --frozen-lockfile
-export PATH="$HOME/.foundry/bin:$PATH"
+pnpm frontend:dev
+```
+
+Open `http://localhost:3000`. A compatible wallet must be set to Monad Testnet
+for transactions. Local API setup, PostgreSQL configuration and deployment
+requirements are in the [backend guide](packages/backend/README.md). The
+[frontend guide](packages/frontend/README.md) documents public configuration
+overrides and wallet behavior.
+
+## Build and verify
+
+```bash
 pnpm contracts:build
 pnpm contracts:test
 pnpm spike:test
@@ -62,29 +102,22 @@ pnpm frontend:check
 pnpm frontend:build
 ```
 
-Run the local frontend with `pnpm frontend:dev` and open
-`http://localhost:3000`. The hosted API currently allows that exact origin.
-
-To run the optional historical fork integration tests:
+The backend suite starts a local Anvil chain; these commands do not broadcast
+testnet transactions. Optional historical Perpl fork tests need an archive-capable
+Monad Testnet RPC:
 
 ```bash
 MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz pnpm contracts:test
 ```
 
-Fork tests use local simulated transactions against fetched chain state. They do
-not require a wallet or broadcast transactions. The fork suite skips explicitly
-when no RPC URL is configured.
+## Repository
 
-## Custody spike tools
+- `packages/contracts/`: vault, adapter, registry, risk controller and tests.
+- `packages/backend/`: service, persistence, qualification, relay and keeper.
+- `packages/frontend/`: React app and wallet integration.
+- `deployments/`: testnet configuration, verified source and transaction evidence.
+- `spikes/perpl-custody/`: earlier standalone custody integration and probes.
 
-```bash
-pnpm spike:probe
-pnpm spike:compile
-pnpm spike:check
-PERPL_HARNESS_ADDRESS=0xf628b42d22c3a2adda10008c09db4e708c527549 pnpm spike:accounting
-```
-
-`pnpm spike:live` is deliberately guarded. It requires separate dedicated owner
-and operator Monad Testnet keys, testnet MON for both, and enough AUSD collateral.
-It never prints either key. The completed cycle can be independently checked with
-`pnpm spike:verify-live`. See the [spike documentation](spikes/perpl-custody/README.md).
+The custody prototype is retained as an integration reference; it is separate
+from the application vault. AI coding tools were used during implementation and
+documentation. The test and receipt records above show what has been verified.
