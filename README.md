@@ -10,7 +10,7 @@ immediate-or-cancel BTC or ETH orders only after a qualification is published
 on-chain, and every order passes the vault's risk checks. Share conversions resume
 after positions are closed and collateral has returned to the vault.
 
-The [testnet app](https://metropolis-vault-testnet.pages.dev) exposes live vault
+The [testnet app](https://metropolis.allensaji.dev) exposes live vault
 state, wallet actions, qualification, risk policy and indexed transactions.
 [Deployment records](deployments/README.md) contain contract addresses, source
 verification and transaction receipts.
@@ -55,7 +55,7 @@ contracts even when the backend is unavailable.
 ## Testnet deployment
 
 - Chain: Monad Testnet, chain ID `10143`.
-- App: https://metropolis-vault-testnet.pages.dev
+- App: https://metropolis.allensaji.dev
 - API: https://backend-production-e090.up.railway.app
 - Contracts and receipts: [deployment records](deployments/README.md).
 

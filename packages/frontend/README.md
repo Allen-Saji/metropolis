@@ -54,18 +54,17 @@ performance for missing live data.
 
 ## Hosting
 
-The static testnet site is published by direct upload to Cloudflare Pages at
-`https://metropolis-vault-testnet.pages.dev`. Build output is
-`packages/frontend/dist`. The Pages project is named `metropolis-vault-testnet`;
-its `wrangler.jsonc` config points to `dist`. From this package directory, use
-`pnpm build` followed by `npx wrangler pages deploy dist --branch=main` for a
-new production deployment. Direct Upload projects do not support later switching
-to Git integration; use a new Pages project if automatic Git builds are needed.
-If Wrangler has access to multiple Cloudflare accounts, set
-`CLOUDFLARE_ACCOUNT_ID` to the intended account before deploying. Keep account
-selection and authentication outside the repository.
+The static testnet site is hosted at `https://metropolis.allensaji.dev` by the
+Vercel project `metropolis`. The project is connected to this repository's
+`main` branch. The root `vercel.json` runs `pnpm install --frozen-lockfile` and
+`pnpm frontend:build`, then publishes `packages/frontend/dist`.
+
+The earlier Cloudflare Pages Direct Upload site remains at
+`https://metropolis-vault-testnet.pages.dev`. It is not the primary deployment
+and does not update when commits are pushed to GitHub.
 
 Set `VITE_API_URL` and `VITE_RPC_URL` at build time when using other endpoints.
-The backend `APP_ORIGIN` must be the public Pages origin; localhost is included
-through `APP_ADDITIONAL_ORIGINS`. `VITE_` variables are public browser
+The backend must allow each browser origin for CORS and SIWE. The deployed
+backend currently has the Pages URL in `APP_ORIGIN`, with the Vercel custom domain
+and localhost in `APP_ADDITIONAL_ORIGINS`. `VITE_` variables are public browser
 configuration and must not contain secrets.
