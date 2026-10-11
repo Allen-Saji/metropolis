@@ -4,7 +4,7 @@ import { agentCallsign, DEPLOYMENT } from "./config";
 import { useVaultData } from "./hooks/useVaultData";
 import { useWallet } from "./hooks/useWallet";
 import { backend, type ActivityEvent, type QualificationRun, type VaultState } from "./lib/api";
-import { assetAbi, ensureMonad, publicClient, vaultAbi, walletClient, walletProvider } from "./lib/chain";
+import { assetAbi, ensureMonad, publicClient, vaultAbi, walletClient, walletProvider, type WalletOption } from "./lib/chain";
 import { errorMessage, formatAmount, formatCompact, formatDate, lifecycleLabel, shortAddress } from "./lib/format";
 
 const explorer = "https://testnet.monadscan.com";
@@ -36,7 +36,16 @@ function SectionHeader({ kicker, title, copy, aside }: { kicker: string; title: 
   return <div className="section-header"><div><p className="eyebrow">{kicker}</p><h2>{title}</h2>{copy && <p className="section-copy">{copy}</p>}</div>{aside}</div>;
 }
 
-function Header({ account, connect, busy }: { account: Address | null; connect: () => Promise<unknown>; busy: boolean }) {
+function Header({ account, connect, busy, wallets, chooserOpen, closeChooser, selectWallet, walletError }: {
+  account: Address | null;
+  connect: () => Promise<unknown>;
+  busy: boolean;
+  wallets: WalletOption[];
+  chooserOpen: boolean;
+  closeChooser: () => void;
+  selectWallet: (wallet: WalletOption) => Promise<unknown>;
+  walletError: string | null;
+}) {
   const [open, setOpen] = useState(false);
   return <header className="site-header">
     <Brand />
@@ -48,6 +57,8 @@ function Header({ account, connect, busy }: { account: Address | null; connect: 
       <button className="mobile-toggle" type="button" aria-expanded={open} aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen(value => !value)}>{open ? "[ X ]" : "[ = ]"}</button>
     </div>
     {open && <nav className="mobile-nav" aria-label="Mobile navigation">{navItems.map(item => <a href={item.href} key={item.href} onClick={() => setOpen(false)}>{item.label}<IconArrow diagonal /></a>)}<button type="button" className="btn-square" onClick={() => { setOpen(false); if (!account) void connect().catch(() => {}); else document.getElementById("console")?.scrollIntoView({ behavior: "smooth" }); }}>{account ? shortAddress(account) : "Connect wallet"}<IconArrow diagonal /></button></nav>}
+    {walletError && <div className="wallet-notice mono" role="alert">{walletError}</div>}
+    {chooserOpen && <div className="wallet-dialog-backdrop"><div className="wallet-dialog card" role="dialog" aria-modal="true" aria-labelledby="wallet-dialog-title"><div className="card-topline"><span className="eyebrow">WALLET CONNECTION</span><button className="wallet-dialog-close mono" type="button" onClick={closeChooser} aria-label="Close wallet chooser">[ X ]</button></div><h2 id="wallet-dialog-title">Choose your wallet.</h2><p>Connect the wallet you want to use on Monad Testnet.</p><div className="wallet-options">{wallets.map(wallet => <button type="button" className="btn-outline" key={wallet.id} onClick={() => void selectWallet(wallet).catch(() => {})} disabled={busy}>{wallet.name}<IconArrow diagonal /></button>)}</div></div></div>}
   </header>;
 }
 
@@ -297,5 +308,5 @@ export default function App() {
   const wallet = useWallet(vault.suite?.suiteHash);
   const currentAgent = vault.state?.activeAgentId;
   const qualification = useMemo(() => currentAgent && currentAgent !== "0" && BigInt(currentAgent) === DEPLOYMENT.agentId ? vault.qualification?.qualified ?? null : null, [currentAgent, vault.qualification]);
-  return <><Header account={wallet.account} connect={wallet.connect} busy={wallet.busy} /><main><Hero state={vault.state} /><Metrics state={vault.state} /><div className="overview-section section page-width"><SectionHeader kicker="01 / LIVE SYSTEM" title="A clear view of the machine." copy="Current state is read from the vault contract and the backend indexer. No simulated positions or performance." aside={<span className="mono muted header-meta">LAST BLOCK / {vault.state?.blockNumber ?? "--"}</span>} /><div className="overview-grid"><StatusBoard state={vault.state} qualified={qualification} qualificationExpiry={vault.qualification?.expiresAt ?? null} error={vault.error} refreshing={vault.refreshing} refresh={vault.refresh} /><ExposureBoard state={vault.state} /></div></div><WalletPanel state={vault.state} account={wallet.account} snapshot={wallet.snapshot} walletBusy={wallet.busy} walletError={wallet.error} connect={wallet.connect} readWallet={() => wallet.read()} refresh={vault.refresh} /><EventStream activity={vault.activity} indexedBlock={vault.keeper?.indexedThrough?.block_number} headBlock={vault.state?.blockNumber} /><ProtocolCards state={vault.state} activity={vault.activity} /><QualificationPanel account={wallet.account} snapshot={wallet.snapshot} authenticate={wallet.authenticate} readWallet={() => wallet.read()} refresh={vault.refresh} /></main><Footer /></>;
+  return <><Header account={wallet.account} connect={wallet.connect} busy={wallet.busy} wallets={wallet.wallets} chooserOpen={wallet.chooserOpen} closeChooser={() => wallet.setChooserOpen(false)} selectWallet={wallet.selectWallet} walletError={wallet.error} /><main><Hero state={vault.state} /><Metrics state={vault.state} /><div className="overview-section section page-width"><SectionHeader kicker="01 / LIVE SYSTEM" title="A clear view of the machine." copy="Current state is read from the vault contract and the backend indexer. No simulated positions or performance." aside={<span className="mono muted header-meta">LAST BLOCK / {vault.state?.blockNumber ?? "--"}</span>} /><div className="overview-grid"><StatusBoard state={vault.state} qualified={qualification} qualificationExpiry={vault.qualification?.expiresAt ?? null} error={vault.error} refreshing={vault.refreshing} refresh={vault.refresh} /><ExposureBoard state={vault.state} /></div></div><WalletPanel state={vault.state} account={wallet.account} snapshot={wallet.snapshot} walletBusy={wallet.busy} walletError={wallet.error} connect={wallet.connect} readWallet={() => wallet.read()} refresh={vault.refresh} /><EventStream activity={vault.activity} indexedBlock={vault.keeper?.indexedThrough?.block_number} headBlock={vault.state?.blockNumber} /><ProtocolCards state={vault.state} activity={vault.activity} /><QualificationPanel account={wallet.account} snapshot={wallet.snapshot} authenticate={wallet.authenticate} readWallet={() => wallet.read()} refresh={vault.refresh} /></main><Footer /></>;
 }

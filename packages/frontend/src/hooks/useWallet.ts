@@ -3,7 +3,19 @@ import { isAddress, type Address, type Hex } from "viem";
 import { parseSiweMessage } from "viem/siwe";
 import { backend } from "../lib/api";
 import { DEPLOYMENT } from "../config";
-import { ensureMonad, readWalletSnapshot, walletClient, walletProvider, type WalletSnapshot } from "../lib/chain";
+import {
+  ensureMonad,
+  getWalletOptions,
+  readWalletSnapshot,
+  requestWalletProviders,
+  selectWalletProvider,
+  subscribeWallets,
+  walletClient,
+  walletProvider,
+  type InjectedProvider,
+  type WalletOption,
+  type WalletSnapshot,
+} from "../lib/chain";
 import { errorMessage } from "../lib/format";
 
 type Session = { account: Address; token: string; expiresAt: number };
@@ -13,6 +25,9 @@ export function useWallet(suiteHash: Hex | undefined) {
   const [snapshot, setSnapshot] = useState<WalletSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [wallets, setWallets] = useState<WalletOption[]>([]);
+  const [chooserOpen, setChooserOpen] = useState(false);
+  const [provider, setProvider] = useState<InjectedProvider | null>(null);
   const session = useRef<Session | null>(null);
   const readSequence = useRef(0);
   const accountRef = useRef<Address | null>(null);
@@ -32,14 +47,24 @@ export function useWallet(suiteHash: Hex | undefined) {
     }
   }, [account, suiteHash]);
 
+  useEffect(() => subscribeWallets(setWallets), []);
+
   useEffect(() => {
-    if (!window.ethereum) return;
+    if (wallets.length === 1 && !provider) {
+      selectWalletProvider(wallets[0]!.provider);
+      setProvider(wallets[0]!.provider);
+    }
+  }, [wallets, provider]);
+
+  useEffect(() => {
+    if (!provider) return;
     let alive = true;
     const sync = async () => {
       try {
-        const accounts = await walletProvider().request({ method: "eth_accounts" });
+        const accounts = await provider.request({ method: "eth_accounts" });
         if (!alive) return;
         const next = Array.isArray(accounts) && isAddress(accounts[0]) ? accounts[0] : null;
+        if (next?.toLowerCase() === accountRef.current?.toLowerCase()) return;
         ++readSequence.current;
         accountRef.current = next;
         setAccount(next);
@@ -51,29 +76,31 @@ export function useWallet(suiteHash: Hex | undefined) {
     };
     const onAccounts = () => void sync();
     void sync();
-    window.ethereum.on?.("accountsChanged", onAccounts);
+    provider.on?.("accountsChanged", onAccounts);
     return () => {
       alive = false;
-      window.ethereum?.removeListener?.("accountsChanged", onAccounts);
+      provider.removeListener?.("accountsChanged", onAccounts);
     };
-  }, []);
+  }, [provider]);
 
   useEffect(() => { void read(); }, [read]);
 
-  const connect = useCallback(async () => {
+  const connectWith = useCallback(async (selected: InjectedProvider) => {
     setBusy(true);
     setError(null);
     try {
-      const provider = walletProvider();
-      const accounts = await provider.request({ method: "eth_requestAccounts" });
+      selectWalletProvider(selected);
+      setProvider(selected);
+      const accounts = await selected.request({ method: "eth_requestAccounts" });
       const next = Array.isArray(accounts) ? accounts[0] : null;
       if (typeof next !== "string" || !isAddress(next)) throw new Error("The wallet did not return an account.");
-      await ensureMonad(provider);
+      await ensureMonad(selected);
       ++readSequence.current;
       accountRef.current = next;
       setSnapshot(null);
       session.current = null;
       setAccount(next);
+      setChooserOpen(false);
       return next as Address;
     } catch (cause) {
       setError(errorMessage(cause));
@@ -82,6 +109,20 @@ export function useWallet(suiteHash: Hex | undefined) {
       setBusy(false);
     }
   }, []);
+
+  const connect = useCallback(async () => {
+    let available = wallets;
+    if (!available.length) {
+      requestWalletProviders();
+      await new Promise(resolve => setTimeout(resolve, 500));
+      available = getWalletOptions();
+    }
+    if (available.length > 1) { setChooserOpen(true); return; }
+    if (available.length === 1) return connectWith(available[0]!.provider);
+    setError("No EVM wallet was detected in this browser profile.");
+  }, [wallets, connectWith]);
+
+  const selectWallet = useCallback((wallet: WalletOption) => connectWith(wallet.provider), [connectWith]);
 
   const authenticate = useCallback(async (target: Address) => {
     if (accountRef.current?.toLowerCase() !== target.toLowerCase()) throw new Error("Reconnect the selected wallet account.");
@@ -107,5 +148,5 @@ export function useWallet(suiteHash: Hex | undefined) {
     return verified.token;
   }, []);
 
-  return { account, snapshot, error, busy, connect, read, authenticate };
+  return { account, snapshot, error, busy, wallets, chooserOpen, setChooserOpen, connect, selectWallet, read, authenticate };
 }

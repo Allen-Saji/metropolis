@@ -58,6 +58,72 @@ export type InjectedProvider = EIP1193Provider & {
   removeListener?: (event: string, listener: (...args: unknown[]) => void) => void;
 };
 
+export type WalletOption = {
+  id: string;
+  name: string;
+  provider: InjectedProvider;
+};
+
+type ProviderAnnouncement = CustomEvent<{
+  info: { uuid: string; name: string };
+  provider: InjectedProvider;
+}>;
+
+const announcedWallets = new Map<string, WalletOption>();
+const walletListeners = new Set<(wallets: WalletOption[]) => void>();
+let discoveryStarted = false;
+let selectedProvider: InjectedProvider | null = null;
+
+function publishWallets() {
+  const wallets = [...announcedWallets.values()];
+  for (const listener of walletListeners) listener(wallets);
+}
+
+function legacyWallet() {
+  try { return window.ethereum; } catch { return undefined; }
+}
+
+export function requestWalletProviders() {
+  window.dispatchEvent(new Event("eip6963:requestProvider"));
+  window.setTimeout(() => {
+    const provider = legacyWallet();
+    if (announcedWallets.size || !provider) return;
+    announcedWallets.set("legacy", { id: "legacy", name: "Browser wallet", provider });
+    publishWallets();
+  }, 400);
+}
+
+export function getWalletOptions() {
+  return [...announcedWallets.values()];
+}
+
+export function subscribeWallets(listener: (wallets: WalletOption[]) => void) {
+  walletListeners.add(listener);
+  if (!discoveryStarted) {
+    discoveryStarted = true;
+    window.addEventListener("eip6963:announceProvider", event => {
+      const detail = (event as ProviderAnnouncement).detail;
+      if (!detail || typeof detail.info?.uuid !== "string" ||
+          typeof detail.info.name !== "string" ||
+          typeof detail.provider?.request !== "function") return;
+      announcedWallets.delete("legacy");
+      announcedWallets.set(detail.info.uuid, {
+        id: detail.info.uuid,
+        name: detail.info.name.slice(0, 50),
+        provider: detail.provider,
+      });
+      publishWallets();
+    });
+  }
+  listener(getWalletOptions());
+  requestWalletProviders();
+  return () => { walletListeners.delete(listener); };
+}
+
+export function selectWalletProvider(provider: InjectedProvider) {
+  selectedProvider = provider;
+}
+
 declare global {
   interface Window {
     ethereum?: InjectedProvider;
@@ -65,8 +131,7 @@ declare global {
 }
 
 export function walletProvider(): InjectedProvider {
-  let provider: InjectedProvider | undefined;
-  try { provider = window.ethereum; } catch { /* Browser has no accessible wallet. */ }
+  const provider = selectedProvider ?? legacyWallet();
   if (!provider) throw new Error("Open this page in a browser with an EVM wallet installed.");
   return provider;
 }
