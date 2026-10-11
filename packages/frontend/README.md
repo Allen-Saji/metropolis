@@ -14,9 +14,9 @@ pnpm install --frozen-lockfile
 pnpm frontend:dev
 ```
 
-Open `http://localhost:3000`, exactly. The hosted API currently permits that
-origin for browser requests. `http://127.0.0.1:3000` is a different origin and
-will fail CORS. No environment file is required for the deployed testnet setup.
+Open `http://localhost:3000`, exactly. The hosted API permits that origin for
+browser requests. `http://127.0.0.1:3000` is a different origin and will fail
+CORS. No environment file is required for the deployed testnet setup.
 Copy `.env.example` to `.env.local` only to override the public API or RPC URLs.
 
 ```bash
@@ -37,8 +37,10 @@ pnpm frontend:build
   operator can submit the public deterministic reference policy. The backend
   publishes the result; the UI reads the registry for the authoritative status.
 
-Wallet actions require an injected EIP-1193 wallet that supports Monad Testnet
-(chain ID 10143). The qualification operator is a separate address from the
+Wallet actions require an EIP-1193 wallet that supports Monad Testnet (chain ID
+10143). The connector discovers multiple injected wallets through EIP-6963 and
+offers a chooser; `window.ethereum` remains a fallback for older wallets. The
+qualification operator is a separate address from the
 vault manager. Authentication uses the API's SIWE challenge; its signature does
 not authorize token transfers. The bearer token is kept in memory and is
 discarded on reload or account change. Transactions require explicit wallet
@@ -52,7 +54,18 @@ performance for missing live data.
 
 ## Hosting
 
-Build output is `packages/frontend/dist`. Set `VITE_API_URL` and `VITE_RPC_URL`
-at build time when using other endpoints. Before serving from a public domain,
-set the backend `APP_ORIGIN` to that exact HTTPS origin and redeploy the backend.
-`VITE_` variables are public browser configuration and must not contain secrets.
+The static testnet site is published by direct upload to Cloudflare Pages at
+`https://metropolis-vault-testnet.pages.dev`. Build output is
+`packages/frontend/dist`. The Pages project is named `metropolis-vault-testnet`;
+its `wrangler.jsonc` config points to `dist`. From this package directory, use
+`pnpm build` followed by `npx wrangler pages deploy dist --branch=main` for a
+new production deployment. Direct Upload projects do not support later switching
+to Git integration; use a new Pages project if automatic Git builds are needed.
+If Wrangler has access to multiple Cloudflare accounts, set
+`CLOUDFLARE_ACCOUNT_ID` to the intended account before deploying. Keep account
+selection and authentication outside the repository.
+
+Set `VITE_API_URL` and `VITE_RPC_URL` at build time when using other endpoints.
+The backend `APP_ORIGIN` must be the public Pages origin; localhost is included
+through `APP_ADDITIONAL_ORIGINS`. `VITE_` variables are public browser
+configuration and must not contain secrets.

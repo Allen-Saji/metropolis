@@ -8,3 +8,5 @@ packages/contracts/cache/
 packages/contracts/broadcast/
 spikes/perpl-custody/artifacts/*.json
 !spikes/perpl-custody/artifacts/.gitkeep
+packages/frontend/.wrangler/
+packages/frontend/package-lock.json
